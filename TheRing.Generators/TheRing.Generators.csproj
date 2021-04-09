@@ -12,6 +12,7 @@
     <!-- Do not include the generator as a lib dependency -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <NuspecFile>$(MSBuildThisFileDirectory)$(MSBuildProjectName).nuspec</NuspecFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,9 +25,19 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <PackageReference Include="TheRing.Common" Version="0.0.2" />
     <!-- Package the generator in the analyzer directory of the nuget package -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
+
+  <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <NuspecProperties>$(NuspecProperties);id=$(AssemblyName)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);config=$(Configuration)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);version=$(PackageVersion)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);description=$(Description)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);authors=$(Authors)</NuspecProperties>
+    </PropertyGroup>
+    <Message Importance="high" Text="NuspecProperties: $(NuspecProperties)" />
+  </Target>
 
 </Project>

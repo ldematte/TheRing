@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheRing.Common\TheRing.Common.csproj" />
     <ProjectReference Include="..\TheRing.Example.Common\TheRing.Example.Common.csproj" />
   </ItemGroup>
 

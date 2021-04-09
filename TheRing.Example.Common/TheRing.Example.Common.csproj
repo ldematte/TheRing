@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheRing.Generators\TheRing.Generators.csproj" OutputItemType="Analyzer" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
+    <PackageReference Include="TheRing.Generators" Version="0.0.2" />
 
   </ItemGroup>
 

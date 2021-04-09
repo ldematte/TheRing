@@ -1,6 +1,5 @@
 ﻿using System;
 using TheRing.Common;
-using TheRing.Generators;
 
 namespace TheRing
 {

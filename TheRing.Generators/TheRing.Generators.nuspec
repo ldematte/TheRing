@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>TheRing.Generators</id>
+    <authors>Lorenzo Dematte</authors>
+	<version>0.0.0</version>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <description>Generates code for using a particular protocol interface with TheRing</description>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.CodeAnalysis.CSharp" version="3.9.0" exclude="Build,Analyzers" />
+        <dependency id="TheRing.Common" version="$version$" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\LICENSE.txt" target="LICENSE.txt" />
+    <file src="bin\Debug\netstandard2.0\TheRing.Generators.dll" target="analyzers\dotnet\cs\TheRing.Generators.dll" />
+  </files>
+</package>
