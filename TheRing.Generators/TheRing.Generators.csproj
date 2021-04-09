@@ -2,6 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+
+    <PackageId>TheRing.Generators</PackageId>
+    <Version>0.0.2</Version>
+    <Authors>Lorenzo Dematte</Authors>
+    <Company>ldematte</Company>
+    <Description>Generates code for using a particular protocol interface with TheRing</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- Do not include the generator as a lib dependency -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheRing.Common\TheRing.Common.csproj" />
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <PackageReference Include="TheRing.Common" Version="0.0.2" />
+    <!-- Package the generator in the analyzer directory of the nuget package -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
 </Project>

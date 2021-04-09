@@ -5,7 +5,7 @@ using TheRing.Common;
 
 namespace TheRing
 {
-    class ConsoleDumper : ISomething
+    class ConsoleDumper : ISomething<string>
     {
         public void Foo(int x, double y)
         {
@@ -27,13 +27,13 @@ namespace TheRing
     {
         static void Main(string[] args)
         {
-            var queue = new BlockingCollectionTaskQueue<ISomething>();
+            var queue = new BlockingCollectionTaskQueue<ISomething<string>>();
 
-            var service = new Service<ISomething>(queue, SingleSubscriber.Create(new ConsoleDumper()));
+            var service = new Service<ISomething<string>>(queue, SingleSubscriber.Create(new ConsoleDumper()));
 
             Task.Run(() => service.Run(CancellationToken.None));
 
-            var y = new AsyncSomething(queue);
+            var y = queue.ToAsync();
 
             while (true)
             {

@@ -7,14 +7,14 @@ namespace TheRing.Grpc.Server
 {
     public class X
     {
-        private X(ISomething subscriber, ISomethingService service)
+        private X(ISomething<string> subscriber, ISomethingService service)
         {
             Subscriber = subscriber;
             Service = service;
         }
 
         public ISomethingService Service { get; }
-        public ISomething Subscriber { get; }
+        public ISomething<string> Subscriber { get; }
 
         public static X Create()
         {

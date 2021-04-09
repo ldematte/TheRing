@@ -50,7 +50,7 @@ namespace TheRing.Example.Common
         IAsyncEnumerable<BazArgs> SubscribeBazAsync(CancellationToken cancellationToken = default);
     }
 
-    public class ToArgsQueue : ISomething
+    public class ToArgsQueue : ISomething<string>
     {
         private readonly ChannelWriter<FooArgs> m_fooChannel;
         private readonly ChannelWriter<BarArgs> m_barChannel;

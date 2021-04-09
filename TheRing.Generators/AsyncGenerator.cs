@@ -1,8 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.Text;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 namespace TheRing.Generators
@@ -17,59 +16,84 @@ namespace TheRing.Generators
 
         public void Execute(GeneratorExecutionContext context)
         {
-            // the generator infrastructure will create a receiver and populate it
-            // we can retrieve the populated instance via the context
+            //System.Diagnostics.Debugger.Launch();
+
+            // Check that the users compilation references the expected library 
+            if (!context.Compilation.ReferencedAssemblyNames.Any(ai => ai.Name.Equals("TheRing.Common", StringComparison.OrdinalIgnoreCase)))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    new DiagnosticDescriptor(
+                        "TR0001",
+                        "Missing assembly reference",
+                        "You must reference TheRing.Common in order to compile the generated code",
+                        "Link",
+                        DiagnosticSeverity.Error,
+                        true), null));
+            }
+
             if (context.SyntaxReceiver is ProtocolInterfaceSyntaxReceiver syntaxReceiver)
             {
-                // get the recorded user class
+                // Loop over the recorded user interfaces
                 foreach (var iface in syntaxReceiver.InterfacesToImplement)
                 {
                     var model = context.Compilation.GetSemanticModel(iface.SyntaxTree);
 
                     var ifaceSymbol = model.GetDeclaredSymbol(iface) as ITypeSymbol;
-
-                    // TODO: base interfaces too
+                    if (ifaceSymbol == null)
+                        continue;
 
                     var sb = new StringBuilder();
 
-                    var className = $"Async{iface.Identifier.ToString().TrimStart('I')}";
+                    var className = $"Async{iface.Identifier}";
+
+                    var typeParameters = iface.TypeParameterList == null ? string.Empty : iface.TypeParameterList.ToString();
+                    var typeConstraints = iface.ConstraintClauses.Any() == false ? string.Empty : iface.ConstraintClauses.ToString();
 
                     sb.Append($@"
 using TheRing.Common;
 using System;
 namespace {ifaceSymbol.ContainingNamespace}
 {{
-public class {className}: {ifaceSymbol}
+public static class {iface.Identifier}Ext
+{{
+    public static {ifaceSymbol} ToAsync{typeParameters}(this ITaskProducer<{ifaceSymbol}> producer) {typeConstraints}
+    {{
+        return new AsyncWrapper{typeParameters}(producer);
+    }}
+
+private class AsyncWrapper{typeParameters}: {ifaceSymbol} {typeConstraints}
 {{ 
     private readonly ITaskProducer<{ifaceSymbol}> m_producer;
 
-    public AsyncSomething(ITaskProducer<{ifaceSymbol}> producer)
+    internal AsyncWrapper(ITaskProducer<{ifaceSymbol}> producer)
     {{ m_producer = producer; }}");
 
-                    foreach (var member in iface.Members)
+                    var inheritedMembers = ifaceSymbol.AllInterfaces.SelectMany(x => x.GetMembers());
+                    var members = ifaceSymbol.GetMembers().Union(inheritedMembers, SymbolEqualityComparer.Default);
+
+                    foreach (var member in members)
                     {
-                        if (member is MethodDeclarationSyntax method)
+                        if (member is IMethodSymbol method)
                         {
-                            
+
                             var parameterDeclaration =
-                                method.ParameterList.Parameters.Select(parameter =>
-                                {
-                                    var parameterSymbol = (IParameterSymbol)model.GetDeclaredSymbol(parameter);
-                                    return $"{parameterSymbol.Type} {parameter.Identifier}";
-                                });
-                            var actualArguments = method.ParameterList.Parameters.Select(parameter => parameter.Identifier.ToString());
+                                method.Parameters
+                                    .Where(parameterSymbol => parameterSymbol != null)
+                                    .Select(parameterSymbol => $"{parameterSymbol.Type} {parameterSymbol.Name}");
+
+                            var actualArguments = method.Parameters.Select(parameter => parameter.Name.ToString());
                            sb.Append($@"
-public {method.ReturnType} {method.Identifier}({string.Join(", ", parameterDeclaration)}) {{ 
-     m_producer.Add(__p => __p.{method.Identifier}({string.Join(", ", actualArguments)}));
+public {method.ReturnType} {method.Name}({string.Join(", ", parameterDeclaration)}) {{ 
+     m_producer.Add(__p => __p.{method.Name}({string.Join(", ", actualArguments)}));
 }}");
                         }
 
                     }
 
-                    sb.Append("} }");
+                    sb.Append("} } }");
 
                     // add the generated implementation to the compilation
-                    SourceText sourceText = SourceText.From(sb.ToString(), Encoding.UTF8);
+                    var sourceText = SourceText.From(sb.ToString(), Encoding.UTF8);
                     context.AddSource($"{className}.g.cs", sourceText);
                 }
             }
