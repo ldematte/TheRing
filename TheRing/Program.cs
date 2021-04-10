@@ -29,9 +29,10 @@ namespace TheRing
         {
             var queue = new BlockingCollectionTaskQueue<ISomething<string>>();
 
-            var service = new Service<ISomething<string>>(queue, SingleSubscriber.Create(new ConsoleDumper()));
+            var service = new Worker<ISomething<string>>(queue, SingleSubscriber.Create(new ConsoleDumper()), 
+                new NullLogger());
 
-            Task.Run(() => service.Run(CancellationToken.None));
+            service.RunOnTask(CancellationToken.None);
 
             var y = queue.ToAsync();
 
