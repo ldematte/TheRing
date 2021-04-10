@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
-    <PackageReference Include="TheRing.Generators" Version="0.0.2" />
+    <PackageReference Include="TheRing.Generators" Version="0.0.3" />
 
   </ItemGroup>
 

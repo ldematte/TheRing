@@ -4,9 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <PackageId>TheRing.Generators</PackageId>
-    <Version>0.0.2</Version>
-    <Authors>Lorenzo Dematte</Authors>
-    <Company>ldematte</Company>
     <Description>Generates code for using a particular protocol interface with TheRing</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- Do not include the generator as a lib dependency -->

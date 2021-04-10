@@ -4,9 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <PackageId>TheRing.Common</PackageId>
-    <Version>0.0.2</Version>
-    <Authors>Lorenzo Dematte</Authors>
-    <Company>ldematte</Company>
     <Description>The core components for TheRing</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -18,5 +15,16 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+
+  <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <NuspecProperties>$(NuspecProperties);id=$(AssemblyName)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);config=$(Configuration)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);version=$(PackageVersion)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);description=$(Description)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);authors=$(Authors)</NuspecProperties>
+    </PropertyGroup>
+    <Message Importance="high" Text="NuspecProperties: $(NuspecProperties)" />
+  </Target>
 
 </Project>
