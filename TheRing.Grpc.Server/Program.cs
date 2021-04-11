@@ -4,7 +4,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
-using TheRing.Common;
+using Microsoft.Extensions.Hosting;
 using TheRing.Example.Common;
 
 namespace TheRing.Grpc.Server
@@ -13,29 +13,29 @@ namespace TheRing.Grpc.Server
     {
         public static async Task Main(string[] args)
         {
-            //var queue = new BlockingCollectionTaskQueue<ISomething>();
-            var something = X.Create();
-            //var somethingService = new SomethingService(queue);
-
+            var something = SomethingService.Create();
 
             var builder = CreateHostBuilder(args, something.Service);
             var host = builder.Build();
 
             await host.StartAsync();
 
-            Task.Run(async () =>
+            var applicationLifetime = host.Services.GetService<IHostApplicationLifetime>();
+
+            var cancellationToken = applicationLifetime == null
+                ? CancellationToken.None
+                : applicationLifetime.ApplicationStopping;
+
+            await Task.Run(async () =>
             {
-                while (true)
+                while (cancellationToken.IsCancellationRequested == false)
                 {
-                    //queue.Add(x => x.Bar("Ciao"));
                     something.Subscriber.Bar("Ciao");
-                    await Task.Delay(3000);
+                    await Task.Delay(3000, cancellationToken);
                 }
-            });
+            }, cancellationToken);
 
-            //somethingService.Run(CancellationToken.None);
-
-            await host.WaitForShutdownAsync();
+            await host.WaitForShutdownAsync(cancellationToken);
         }
 
         public static IWebHostBuilder CreateHostBuilder(string[] args, ISomethingService somethingService)

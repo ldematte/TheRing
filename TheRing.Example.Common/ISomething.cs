@@ -1,7 +1,7 @@
 ﻿using System;
 using TheRing.Common;
 
-namespace TheRing
+namespace TheRing.Example.Common
 {
     public interface IBase<T>
     {

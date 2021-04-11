@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using TheRing.Common;
+using TheRing.Example.Common;
 
-namespace TheRing
+namespace TheRing.Example.Inproc
 {
     class ConsoleDumper : ISomething<string>
     {
@@ -25,7 +25,7 @@ namespace TheRing
 
     static class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var queue = new BlockingCollectionTaskQueue<ISomething<string>>();
 
@@ -43,6 +43,5 @@ namespace TheRing
             }
 
         }
-
     }
 }
