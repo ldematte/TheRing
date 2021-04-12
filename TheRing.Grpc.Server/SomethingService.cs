@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
+using TheRing.Common.Helpers;
 using TheRing.Example.Common;
 
 namespace TheRing.Grpc.Server

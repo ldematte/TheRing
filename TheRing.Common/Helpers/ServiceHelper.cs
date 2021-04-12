@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Channels;
 
-namespace TheRing.Grpc.Server
+namespace TheRing.Common.Helpers
 {
-    static class ServiceHelper
+    public static class ServiceHelper
     {
         public static async IAsyncEnumerable<T> SubscribeTAsync<T, TChannel>(TChannel channel, [EnumeratorCancellation] CancellationToken cancel)
             where TChannel: ChannelReader<T>

@@ -9,13 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheRing.Common", "TheRing.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheRing.Generators", "TheRing.Generators\TheRing.Generators.csproj", "{6FED563E-8735-42F2-A698-8887866E2294}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRing.Grpc.Server", "TheRing.Grpc.Server\TheRing.Grpc.Server.csproj", "{10400412-4C06-475D-9924-E1A8F620947D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheRing.Grpc.Server", "TheRing.Grpc.Server\TheRing.Grpc.Server.csproj", "{10400412-4C06-475D-9924-E1A8F620947D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRing.Example.Common", "TheRing.Example.Common\TheRing.Example.Common.csproj", "{B918C991-83FF-437F-8BB0-D88722209646}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheRing.Example.Common", "TheRing.Example.Common\TheRing.Example.Common.csproj", "{B918C991-83FF-437F-8BB0-D88722209646}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{51B6C544-ABCA-4A3A-8885-40FA1F7144D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRing.Example.GrpcClient", "TheRing.Example.GrpcClient\TheRing.Example.GrpcClient.csproj", "{077A6710-3F5A-49DC-95AD-1681E41BFCBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheRing.Example.GrpcClient", "TheRing.Example.GrpcClient\TheRing.Example.GrpcClient.csproj", "{077A6710-3F5A-49DC-95AD-1681E41BFCBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheRing.Common.Grpc", "TheRing.Common.Grpc\TheRing.Common.Grpc.csproj", "{7850B68D-14E4-44F9-BDCB-768FFDBBB304}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{077A6710-3F5A-49DC-95AD-1681E41BFCBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{077A6710-3F5A-49DC-95AD-1681E41BFCBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{077A6710-3F5A-49DC-95AD-1681E41BFCBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7850B68D-14E4-44F9-BDCB-768FFDBBB304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7850B68D-14E4-44F9-BDCB-768FFDBBB304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7850B68D-14E4-44F9-BDCB-768FFDBBB304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7850B68D-14E4-44F9-BDCB-768FFDBBB304}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
