@@ -28,9 +28,10 @@ namespace TheRing.Grpc.Server
 
             await Task.Run(async () =>
             {
+                var i = 0;
                 while (cancellationToken.IsCancellationRequested == false)
                 {
-                    something.Subscriber.Bar("Ciao");
+                    something.Subscriber.Bar($"Ciao {i++}");
                     await Task.Delay(3000, cancellationToken);
                 }
             }, cancellationToken);

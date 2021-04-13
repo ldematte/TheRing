@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
+using ProtoBuf.Grpc;
 using TheRing.Common.Helpers;
 using TheRing.Example.Common;
 
