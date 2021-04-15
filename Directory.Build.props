@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <Copyright>Copyright © 2021</Copyright>
-		<Version>0.0.4</Version>
+		<Version>0.0.5</Version>
 		<Authors>Lorenzo Dematte</Authors>
 		<Company>ldematte</Company>
     </PropertyGroup>

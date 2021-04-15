@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
-using ProtoBuf.Grpc;
 using TheRing.Common.Helpers;
 using TheRing.Example.Common;
 
-namespace TheRing.Grpc.Server
+namespace TheRing.Example.GrpcServer
 {
     public class SomethingService
     {

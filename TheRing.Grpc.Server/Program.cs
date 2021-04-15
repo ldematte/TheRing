@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TheRing.Example.Common;
 
-namespace TheRing.Grpc.Server
+namespace TheRing.Example.GrpcServer
 {
     public static class Program
     {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using ProtoBuf.Grpc.Server;
 using TheRing.Example.Common;
 
-namespace TheRing.Grpc.Server
+namespace TheRing.Example.GrpcServer
 {
     public class Startup
     {
