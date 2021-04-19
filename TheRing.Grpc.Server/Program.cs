@@ -13,9 +13,7 @@ namespace TheRing.Example.GrpcServer
     {
         public static async Task Main(string[] args)
         {
-            var something = SomethingService.Create();
-
-            var builder = CreateHostBuilder(args, something.Service);
+            var builder = CreateHostBuilder(args);
             var host = builder.Build();
 
             await host.StartAsync();
@@ -26,12 +24,14 @@ namespace TheRing.Example.GrpcServer
                 ? CancellationToken.None
                 : applicationLifetime.ApplicationStopping;
 
+            var something = host.Services.GetRequiredService<ISomething<string>>();
+
             await Task.Run(async () =>
             {
                 var i = 0;
                 while (cancellationToken.IsCancellationRequested == false)
                 {
-                    something.Subscriber.Bar($"Ciao {i++}");
+                    something.Bar($"Ciao {i++}");
                     await Task.Delay(3000, cancellationToken);
                 }
             }, cancellationToken);
@@ -39,13 +39,9 @@ namespace TheRing.Example.GrpcServer
             await host.WaitForShutdownAsync(cancellationToken);
         }
 
-        public static IWebHostBuilder CreateHostBuilder(string[] args, ISomethingService somethingService)
+        private static IWebHostBuilder CreateHostBuilder(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                .ConfigureServices(services =>
-                {
-                    services.AddSingleton<ISomethingService>(somethingService);
-                })
                 .ConfigureKestrel(options =>
                 {
                     options.ListenLocalhost(10042, listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });

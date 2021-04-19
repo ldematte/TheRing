@@ -1,42 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Channels;
-using TheRing.Common.Helpers;
+using TheRing.Common.Grpc;
+using TheRing.Common.Grpc.Server;
 using TheRing.Example.Common;
 
 namespace TheRing.Example.GrpcServer
 {
-    public class SomethingService
+    // TODO: this will be auto-generated
+    public class SomethingService : IGrpcServerService<ISomething<string>>
     {
-        private SomethingService(ISomething<string> subscriber, ISomethingService service)
+        public SomethingService(ISomething<string> subscriber, IServerServiceDefinition serviceDefinition)
         {
+            ServiceDefinition = serviceDefinition;
             Subscriber = subscriber;
-            Service = service;
         }
 
-        public ISomethingService Service { get; }
+        public IServerServiceDefinition ServiceDefinition { get; }
         public ISomething<string> Subscriber { get; }
+    }
 
-        public static SomethingService Create()
+    public class SomethingServiceFactory: IGrpcServerServiceFactory<ISomething<string>>
+    {
+        public IGrpcServerService<ISomething<string>> Create()
         {
-            var fooQueue = Channel.CreateUnbounded<FooArgs>();
-            var barQueue = Channel.CreateUnbounded<BarArgs>();
-            var bazQueue = Channel.CreateUnbounded<BazArgs>();
+            var fooForwarder = new Forwarder<FooArgs>();
+            var barForwarder = new Forwarder<BarArgs>();
+            var bazForwarder = new Forwarder<BazArgs>();
 
-            var subscriber = new ToArgsQueue(fooQueue.Writer, barQueue.Writer, bazQueue.Writer);
-            var service = new SomethingServiceImpl(fooQueue.Reader, barQueue.Reader, bazQueue.Reader);
+            var subscriber = new ToArgsQueue(fooForwarder, barForwarder, bazForwarder);
 
-            return new SomethingService(subscriber, service);
+            var builder = new ServerServiceDefinitionBuilder();
+            GrpcServerHelpers.AddServerStreamingMethod(builder, GrpcServerHelpers.CreateServerStreamingMethod<FooArgs>(nameof(SomethingService), "Foo"), fooForwarder);
+            GrpcServerHelpers.AddServerStreamingMethod(builder, GrpcServerHelpers.CreateServerStreamingMethod<BarArgs>(nameof(SomethingService), "Bar"), barForwarder);
+            GrpcServerHelpers.AddServerStreamingMethod(builder, GrpcServerHelpers.CreateServerStreamingMethod<BazArgs>(nameof(SomethingService), "Baz"), bazForwarder);
+
+            return new SomethingService(subscriber, builder.Build());
         }
         
         private class ToArgsQueue : ISomething<string>
         {
-            private readonly ChannelWriter<FooArgs> m_fooChannel;
-            private readonly ChannelWriter<BarArgs> m_barChannel;
-            private readonly ChannelWriter<BazArgs> m_bazChannel;
+            private readonly Forwarder<FooArgs> m_fooChannel;
+            private readonly Forwarder<BarArgs> m_barChannel;
+            private readonly Forwarder<BazArgs> m_bazChannel;
 
-            public ToArgsQueue(ChannelWriter<FooArgs> fooChannel, ChannelWriter<BarArgs> barChannel, ChannelWriter<BazArgs> bazChannel)
+            public ToArgsQueue(Forwarder<FooArgs> fooChannel, Forwarder<BarArgs> barChannel, Forwarder<BazArgs> bazChannel)
             {
                 m_fooChannel = fooChannel;
                 m_barChannel = barChannel;
@@ -45,47 +51,17 @@ namespace TheRing.Example.GrpcServer
 
             public void Foo(int x, double y)
             {
-                m_fooChannel.TryWrite(new FooArgs { x = x, y = y });
+                m_fooChannel.Forward(new FooArgs { x = x, y = y });
             }
 
             public void Bar(string x)
             {
-                m_barChannel.TryWrite(new BarArgs { x = x });
+                m_barChannel.Forward(new BarArgs { x = x });
             }
 
             public void Baz(ReadOnlyMemory<byte> x)
             {
-                m_bazChannel.TryWrite(new BazArgs { x = x.ToArray() });
-            }
-        }
-
-        private class SomethingServiceImpl : ISomethingService
-        {
-            private readonly ChannelReader<FooArgs> m_fooQueue;
-            private readonly ChannelReader<BarArgs> m_barQueue;
-            private readonly ChannelReader<BazArgs> m_bazQueue;
-
-            internal SomethingServiceImpl(ChannelReader<FooArgs> fooQueue, ChannelReader<BarArgs> barQueue,
-                ChannelReader<BazArgs> bazQueue)
-            {
-                m_fooQueue = fooQueue;
-                m_barQueue = barQueue;
-                m_bazQueue = bazQueue;
-            }
-
-            public IAsyncEnumerable<FooArgs> SubscribeFooAsync(CancellationToken cancel)
-            {
-                return ServiceHelper.SubscribeTAsync<FooArgs, ChannelReader<FooArgs>>(m_fooQueue, cancel);
-            }
-
-            public IAsyncEnumerable<BarArgs> SubscribeBarAsync(CancellationToken cancel)
-            {
-                return ServiceHelper.SubscribeTAsync<BarArgs, ChannelReader<BarArgs>>(m_barQueue, cancel);
-            }
-
-            public IAsyncEnumerable<BazArgs> SubscribeBazAsync(CancellationToken cancel)
-            {
-                return ServiceHelper.SubscribeTAsync<BazArgs, ChannelReader<BazArgs>>(m_bazQueue, cancel);
+                m_bazChannel.Forward(new BazArgs { x = x.ToArray() });
             }
         }
     }
